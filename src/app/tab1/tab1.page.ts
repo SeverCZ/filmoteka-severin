@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { MovieService, Movie } from '../services/movie';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -7,7 +7,14 @@ import { Component } from '@angular/core';
   standalone: false,
 })
 export class Tab1Page {
+  movies: Movie[] = [];
 
-  constructor() {}
+  constructor(private movieService: MovieService) {
+    this.movies = this.movieService.getMovies();
+  }
 
+  searchMovie(event: any) {
+    const searchTerm = event.target.value;
+    this.movies = this.movieService.getMovies(searchTerm);
+  }
 }

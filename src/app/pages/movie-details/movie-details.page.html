@@ -1,0 +1,34 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ movie?.title }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <div *ngIf="movie; else errorTemplate">
+
+    <div style="text-align: center; margin-bottom: 20px;">
+      <img [src]="movie.poster" style="border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); max-height: 400px;" />
+    </div>
+
+    <h1>{{ movie.title }}</h1>
+    <h3 style="color: gray;">Rok vydání: {{ movie.year }}</h3>
+
+    <p style="font-size: 1.1em; line-height: 1.5;">
+      {{ movie.description }}
+    </p>
+
+  </div>
+
+  <ng-template #errorTemplate>
+    <div style="text-align: center; margin-top: 50px;">
+      <h2>Film nenalezen 😕</h2>
+      <p>Zkuse se vrátit zpět na seznam.</p>
+    </div>
+  </ng-template>
+
+</ion-content>
