@@ -1,0 +1,7 @@
+{
+  "name": "filmoteka_severin",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
