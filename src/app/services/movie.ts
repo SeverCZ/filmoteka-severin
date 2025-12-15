@@ -1,59 +1,77 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map, of } from 'rxjs';
 
 export interface Movie {
   id: string;
   title: string;
   year: string;
   poster: string;
-  description: string;
+  description?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class MovieService {
-  private movies: Movie[] = [
-    { id: '1', title: 'Matrix', year: '1999', poster: 'https://placehold.co/100x150/000000/FFF?text=Matrix', description: 'Neo hledá pravdu.' },
-    { id: '2', title: 'Inception', year: '2010', poster: 'https://placehold.co/100x150/000000/FFF?text=Inception', description: 'Sen uvnitř snu.' },
-    { id: '3', title: 'Interstellar', year: '2014', poster: 'https://placehold.co/100x150/000000/FFF?text=Interstellar', description: 'Cesta do černé díry.' }
-  ];
+  private apiKey = '8aa1bfe';
+  private url = 'https://www.omdbapi.com/';
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
-  getMovies(searchTerm: string = '') {
-    return this.movies.filter(movie =>
-      movie.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+
+  getMovies(searchTerm: string): Observable<Movie[]> {
+    if (!searchTerm) return of([]);
+
+    return this.http.get<any>(`${this.url}?apikey=${this.apiKey}&s=${searchTerm}`)
+      .pipe(
+        map(result => {
+          if (result.Response === 'False') return [];
+
+          return result.Search.map((item: any) => ({
+            id: item.imdbID,
+            title: item.Title,
+            year: item.Year,
+            poster: item.Poster !== 'N/A' ? item.Poster : 'https://placehold.co/100x150?text=No+Image',
+            description: ''
+          }));
+        })
+      );
   }
 
-  getMovieById(id: string) {
-    return this.movies.find(movie => movie.id === id);
+  getMovieById(id: string): Observable<Movie> {
+    return this.http.get<any>(`${this.url}?apikey=${this.apiKey}&i=${id}&plot=full`)
+      .pipe(
+        map(item => ({
+          id: item.imdbID,
+          title: item.Title,
+          year: item.Year,
+          poster: item.Poster !== 'N/A' ? item.Poster : 'https://placehold.co/300x450?text=No+Image',
+          description: item.Plot
+        }))
+      );
   }
 
-  getFavoriteIds(): string[] {
+
+  getFavoriteMovies(): Movie[] {
     const stored = localStorage.getItem('favorites');
     return stored ? JSON.parse(stored) : [];
   }
 
   isFavorite(id: string): boolean {
-    const favorites = this.getFavoriteIds();
-    return favorites.includes(id);
+    const favorites = this.getFavoriteMovies();
+    return favorites.some(m => m.id === id);
   }
 
-  toggleFavorite(id: string) {
-    let favorites = this.getFavoriteIds();
+  toggleFavorite(movie: Movie) {
+    let favorites = this.getFavoriteMovies();
 
-    if (favorites.includes(id)) {
-      favorites = favorites.filter(favId => favId !== id);
+    if (this.isFavorite(movie.id)) {
+      favorites = favorites.filter(m => m.id !== movie.id);
     } else {
-      favorites.push(id);
+      favorites.push(movie);
     }
 
     localStorage.setItem('favorites', JSON.stringify(favorites));
-  }
-
-  getFavoriteMovies(): Movie[] {
-    const favIds = this.getFavoriteIds();
-    return this.movies.filter(m => favIds.includes(m.id));
   }
 }

@@ -7,7 +7,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-searchbar (ionInput)="searchMovie($event)" placeholder="Hledat film..."></ion-searchbar>
+  <ion-searchbar (ionInput)="searchMovie($event)" debounce="500" placeholder="Hledat film..."></ion-searchbar>
 
   <ion-list>
     <ion-item *ngFor="let m of movies" [routerLink]="['/movie-details', m.id]" detail>

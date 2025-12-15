@@ -10,11 +10,17 @@ export class Tab1Page {
   movies: Movie[] = [];
 
   constructor(private movieService: MovieService) {
-    this.movies = this.movieService.getMovies();
+    this.searchApi('Harry Potter');
   }
 
   searchMovie(event: any) {
     const searchTerm = event.target.value;
-    this.movies = this.movieService.getMovies(searchTerm);
+    this.searchApi(searchTerm);
+  }
+
+  searchApi(term: string) {
+    this.movieService.getMovies(term).subscribe(result => {
+      this.movies = result;
+    });
   }
 }

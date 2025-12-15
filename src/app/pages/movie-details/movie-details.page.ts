@@ -20,13 +20,16 @@ export class MovieDetailsPage implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.movie = this.movieService.getMovieById(id);
-      this.isFav = this.movieService.isFavorite(id);
+      this.movieService.getMovieById(id).subscribe(result => {
+        this.movie = result;
+        this.isFav = this.movieService.isFavorite(this.movie.id);
+      });
     }
   }
+
   toggleHeart() {
     if (this.movie) {
-      this.movieService.toggleFavorite(this.movie.id);
+      this.movieService.toggleFavorite(this.movie);
       this.isFav = !this.isFav;
     }
   }
