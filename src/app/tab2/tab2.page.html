@@ -1,17 +1,30 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="danger">
     <ion-title>
-      Tab 2
+      Oblíbené filmy
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <ion-list *ngIf="favoriteMovies.length > 0; else emptyState">
+    <ion-item *ngFor="let m of favoriteMovies" [routerLink]="['/movie-details', m.id]" detail>
+      <ion-thumbnail slot="start">
+        <img [src]="m.poster" />
+      </ion-thumbnail>
+      <ion-label>
+        <h2>{{ m.title }}</h2>
+        <p>{{ m.year }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ng-template #emptyState>
+    <div class="ion-text-center ion-padding" style="margin-top: 50px;">
+      <h3>Zatím nemáš nic v oblíbených</h3>
+      <p>Pro přidání do oblíbených rozklikni film a klikni na srdíčko</p>
+    </div>
+  </ng-template>
+
 </ion-content>

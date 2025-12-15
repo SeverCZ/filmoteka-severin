@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MovieService, Movie } from '../services/movie';
 
 @Component({
   selector: 'app-tab2',
@@ -7,7 +8,11 @@ import { Component } from '@angular/core';
   standalone: false,
 })
 export class Tab2Page {
+  favoriteMovies: Movie[] = [];
 
-  constructor() {}
+  constructor(private movieService: MovieService) {}
 
+  ionViewWillEnter() {
+    this.favoriteMovies = this.movieService.getFavoriteMovies();
+  }
 }

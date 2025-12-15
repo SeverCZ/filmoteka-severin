@@ -29,4 +29,31 @@ export class MovieService {
   getMovieById(id: string) {
     return this.movies.find(movie => movie.id === id);
   }
+
+  getFavoriteIds(): string[] {
+    const stored = localStorage.getItem('favorites');
+    return stored ? JSON.parse(stored) : [];
+  }
+
+  isFavorite(id: string): boolean {
+    const favorites = this.getFavoriteIds();
+    return favorites.includes(id);
+  }
+
+  toggleFavorite(id: string) {
+    let favorites = this.getFavoriteIds();
+
+    if (favorites.includes(id)) {
+      favorites = favorites.filter(favId => favId !== id);
+    } else {
+      favorites.push(id);
+    }
+
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }
+
+  getFavoriteMovies(): Movie[] {
+    const favIds = this.getFavoriteIds();
+    return this.movies.filter(m => favIds.includes(m.id));
+  }
 }

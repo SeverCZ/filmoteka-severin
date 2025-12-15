@@ -10,6 +10,7 @@ import { MovieService, Movie } from '../../services/movie';
 })
 export class MovieDetailsPage implements OnInit {
   movie: Movie | undefined;
+  isFav = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -20,6 +21,13 @@ export class MovieDetailsPage implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.movie = this.movieService.getMovieById(id);
+      this.isFav = this.movieService.isFavorite(id);
+    }
+  }
+  toggleHeart() {
+    if (this.movie) {
+      this.movieService.toggleFavorite(this.movie.id);
+      this.isFav = !this.isFav;
     }
   }
 }

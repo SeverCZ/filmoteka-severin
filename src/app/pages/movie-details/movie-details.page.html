@@ -4,6 +4,11 @@
       <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ movie?.title }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleHeart()">
+        <ion-icon [name]="isFav ? 'heart' : 'heart-outline'" color="danger"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
